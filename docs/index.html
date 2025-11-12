@@ -34,90 +34,25 @@
       color: var(--text);
       font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
     }
-    .layout {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      min-height: 100vh;
-    }
-    nav {
-      background: var(--panel);
-      border-right: 1px solid var(--border);
-      padding: 20px 16px;
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      overflow-y: auto;
-    }
-    .brand {
-      font-weight: 600;
-      font-size: 16px;
-      margin-bottom: 12px;
-    }
-    .subtitle {
-      color: var(--muted);
-      font-size: 12px;
-      margin-bottom: 16px;
-    }
-    .toc {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .toc > li {
-      margin: 8px 0 6px;
-    }
-    .toc-section {
-      color: var(--text);
-      font-weight: 600;
-      text-decoration: none;
-      display: block;
-      padding: 6px 8px;
-      border-radius: 6px;
-    }
+    .layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; }
+    nav { background: var(--panel); border-right: 1px solid var(--border); padding: 20px 16px; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
+    .brand { font-weight: 600; font-size: 16px; margin-bottom: 12px; }
+    .subtitle { color: var(--muted); font-size: 12px; margin-bottom: 16px; }
+    .toc { list-style: none; padding: 0; margin: 0; }
+    .toc > li { margin: 8px 0 6px; }
+    .toc-section { color: var(--text); font-weight: 600; text-decoration: none; display: block; padding: 6px 8px; border-radius: 6px; }
     .toc-section:hover { background: var(--hover); }
-    .toc-sublist {
-      list-style: none;
-      margin: 6px 0 6px 8px;
-      padding-left: 10px;
-      border-left: 1px solid var(--border);
-    }
-    .toc-subitem {
-      color: var(--muted);
-      text-decoration: none;
-      display: block;
-      padding: 4px 8px;
-      border-radius: 6px;
-    }
+    .toc-sublist { list-style: none; margin: 6px 0 6px 8px; padding-left: 10px; border-left: 1px solid var(--border); }
+    .toc-subitem { color: var(--muted); text-decoration: none; display: block; padding: 4px 8px; border-radius: 6px; }
     .toc-subitem:hover { color: var(--text); background: var(--hover-sub); }
-    main {
-      padding: 28px;
-    }
-    h1 {
-      margin: 0 0 8px;
-      font-size: 24px;
-      font-weight: 700;
-    }
+    main { padding: 28px; }
+    h1 { margin: 0 0 8px; font-size: 24px; font-weight: 700; }
     .note { color: var(--muted); }
-    .footer {
-      margin-top: 24px;
-      color: var(--muted);
-      font-size: 12px;
-      border-top: 1px solid var(--border);
-      padding-top: 16px;
-    }
+    .footer { margin-top: 24px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--border); padding-top: 16px; }
     .badge { color: var(--accent); font-weight: 600; }
     .theme-toggle { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
     .theme-label { font-size: 12px; color: var(--muted); }
-    .theme-btn {
-      appearance: none;
-      border: 1px solid var(--border);
-      background: transparent;
-      color: var(--text);
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 12px;
-      cursor: pointer;
-    }
+    .theme-btn { appearance: none; border: 1px solid var(--border); background: transparent; color: var(--text); padding: 6px 10px; border-radius: 8px; font-size: 12px; cursor: pointer; }
     .theme-btn:hover { background: var(--hover); }
     .theme-btn.active { background: var(--accent); border-color: var(--accent); color: #ffffff; }
   </style>
@@ -136,12 +71,11 @@
     </nav>
     <main>
       <h1>Documentation Overview</h1>
-      <p class="note">This page displays a generated table of contents based on <code>README.md</code>. Content pages will be added next.</p>
-      <div class="footer">Powered by <span class="badge">GitHub Pages</span>. Update <code>README.md</code> to change the outline.</div>
+      <p class="note">This page displays a generated table of contents based on <code>README.md</code> within the <code>docs/</code> directory. Content pages will be added next.</p>
+      <div class="footer">Powered by <span class="badge">GitHub Pages</span>. Update <code>docs/README.md</code> to change the outline.</div>
     </main>
   </div>
   <script>
-    // Theme toggle
     function setTheme(theme) {
       const root = document.documentElement;
       root.setAttribute('data-theme', theme);
@@ -154,9 +88,8 @@
       darkBtn.setAttribute('aria-pressed', String(isDark));
       lightBtn.setAttribute('aria-pressed', String(!isDark));
     }
-
     function initTheme() {
-      let initial = 'light'; // default to light per requirement
+      let initial = 'light';
       try {
         const saved = localStorage.getItem('theme');
         if (saved === 'light' || saved === 'dark') initial = saved;
@@ -165,7 +98,6 @@
       document.getElementById('theme-dark').addEventListener('click', () => setTheme('dark'));
       document.getElementById('theme-light').addEventListener('click', () => setTheme('light'));
     }
-
     async function buildTOC() {
       const root = document.getElementById('toc-root');
       try {
@@ -173,43 +105,31 @@
         if (!res.ok) throw new Error('README.md not found');
         const md = await res.text();
         const lines = md.split(/\r?\n/);
-
-        let currentSectionLi = null;
-        let currentSectionUl = null; // sublist under section
-        let currentSubsectionUl = null; // nested under subsection
-
+        let currentSectionUl = null;
+        let currentSubsectionUl = null;
         const makeTextId = (t) => t.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-');
-
         for (const raw of lines) {
           const line = raw.replace(/\s+$/,'');
           if (!line || line.startsWith('---')) continue;
-
-          // Headings like ## Concepts
           if (/^##\s+/.test(line)) {
             const title = line.replace(/^##\s+/, '').trim();
             const id = makeTextId(title);
-
             const li = document.createElement('li');
             const a = document.createElement('a');
             a.className = 'toc-section';
             a.textContent = title;
-            a.href = `#${id}`; // placeholder anchor
+            a.href = `#${id}`;
             li.appendChild(a);
-
             currentSectionUl = document.createElement('ul');
             currentSectionUl.className = 'toc-sublist';
             li.appendChild(currentSectionUl);
-
             root.appendChild(li);
-            currentSectionLi = li;
             currentSubsectionUl = null;
             continue;
           }
-
-          // Numbered items like "1. Preliminaries" with optional indentation
           const m = line.match(/^(\s*)(\d+)\.\s+(.*)$/);
           if (m && currentSectionUl) {
-            const indent = m[1].length; // 0 for subsection, >0 for nested
+            const indent = m[1].length;
             const text = m[3].trim();
             const id = makeTextId(text);
             if (indent === 0) {
@@ -220,13 +140,10 @@
               a.href = `#${id}`;
               li.appendChild(a);
               currentSectionUl.appendChild(li);
-
-              // prepare nested list holder under this subsection
               currentSubsectionUl = document.createElement('ul');
               currentSubsectionUl.className = 'toc-sublist';
               li.appendChild(currentSubsectionUl);
             } else {
-              // deeper nested under the last subsection
               if (!currentSubsectionUl) {
                 currentSubsectionUl = document.createElement('ul');
                 currentSubsectionUl.className = 'toc-sublist';
