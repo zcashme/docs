@@ -1,10 +1,256 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>docs.zcash.me</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EDA Clinical Docs — Table of Contents</title>
+  <style>
+    :root {
+      /* defaults to light theme */
+      --bg: #f6f8fa;
+      --panel: #ffffff;
+      --text: #0b0e11;
+      --muted: #5a6b82;
+      --accent: #0a8f66;
+      --border: #e5e7eb;
+      --hover: #f1f5f9;
+      --hover-sub: #eef2f7;
+    }
+    [data-theme="dark"] {
+      --bg: #0b0e11;
+      --panel: #11161c;
+      --text: #e6eef8;
+      --muted: #9fb0c6;
+      --accent: #00c389;
+      --border: #1c232c;
+      --hover: #1a2027;
+      --hover-sub: #182028;
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      min-height: 100vh;
+    }
+    nav {
+      background: var(--panel);
+      border-right: 1px solid var(--border);
+      padding: 20px 16px;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    .brand {
+      font-weight: 600;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+    .subtitle {
+      color: var(--muted);
+      font-size: 12px;
+      margin-bottom: 16px;
+    }
+    .toc {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .toc > li {
+      margin: 8px 0 6px;
+    }
+    .toc-section {
+      color: var(--text);
+      font-weight: 600;
+      text-decoration: none;
+      display: block;
+      padding: 6px 8px;
+      border-radius: 6px;
+    }
+    .toc-section:hover { background: var(--hover); }
+    .toc-sublist {
+      list-style: none;
+      margin: 6px 0 6px 8px;
+      padding-left: 10px;
+      border-left: 1px solid var(--border);
+    }
+    .toc-subitem {
+      color: var(--muted);
+      text-decoration: none;
+      display: block;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
+    .toc-subitem:hover { color: var(--text); background: var(--hover-sub); }
+    main {
+      padding: 28px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .note { color: var(--muted); }
+    .footer {
+      margin-top: 24px;
+      color: var(--muted);
+      font-size: 12px;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+    }
+    .badge { color: var(--accent); font-weight: 600; }
+    .theme-toggle { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
+    .theme-label { font-size: 12px; color: var(--muted); }
+    .theme-btn {
+      appearance: none;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .theme-btn:hover { background: var(--hover); }
+    .theme-btn.active { background: var(--accent); border-color: var(--accent); color: #ffffff; }
+  </style>
 </head>
 <body>
-    <h1>Coming Soon</h1>
-    <p>Our documentation site is under construction.</p>
+  <div class="layout" id="app-root">
+    <nav>
+      <div class="brand">EDA Clinical Docs</div>
+      <div class="subtitle">Table of Contents (from README.md)</div>
+      <div class="theme-toggle" role="group" aria-label="Theme">
+        <span class="theme-label">Theme</span>
+        <button id="theme-light" class="theme-btn" type="button" aria-pressed="false">Light</button>
+        <button id="theme-dark" class="theme-btn" type="button" aria-pressed="false">Dark</button>
+      </div>
+      <ul id="toc-root" class="toc"></ul>
+    </nav>
+    <main>
+      <h1>Documentation Overview</h1>
+      <p class="note">This page displays a generated table of contents based on <code>README.md</code>. Content pages will be added next.</p>
+      <div class="footer">Powered by <span class="badge">GitHub Pages</span>. Update <code>README.md</code> to change the outline.</div>
+    </main>
+  </div>
+  <script>
+    // Theme toggle
+    function setTheme(theme) {
+      const root = document.documentElement;
+      root.setAttribute('data-theme', theme);
+      try { localStorage.setItem('theme', theme); } catch (e) {}
+      const darkBtn = document.getElementById('theme-dark');
+      const lightBtn = document.getElementById('theme-light');
+      const isDark = theme === 'dark';
+      darkBtn.classList.toggle('active', isDark);
+      lightBtn.classList.toggle('active', !isDark);
+      darkBtn.setAttribute('aria-pressed', String(isDark));
+      lightBtn.setAttribute('aria-pressed', String(!isDark));
+    }
+
+    function initTheme() {
+      let initial = 'light'; // default to light per requirement
+      try {
+        const saved = localStorage.getItem('theme');
+        if (saved === 'light' || saved === 'dark') initial = saved;
+      } catch (e) {}
+      setTheme(initial);
+      document.getElementById('theme-dark').addEventListener('click', () => setTheme('dark'));
+      document.getElementById('theme-light').addEventListener('click', () => setTheme('light'));
+    }
+
+    async function buildTOC() {
+      const root = document.getElementById('toc-root');
+      try {
+        const res = await fetch('README.md');
+        if (!res.ok) throw new Error('README.md not found');
+        const md = await res.text();
+        const lines = md.split(/\r?\n/);
+
+        let currentSectionLi = null;
+        let currentSectionUl = null; // sublist under section
+        let currentSubsectionUl = null; // nested under subsection
+
+        const makeTextId = (t) => t.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-');
+
+        for (const raw of lines) {
+          const line = raw.replace(/\s+$/,'');
+          if (!line || line.startsWith('---')) continue;
+
+          // Headings like ## Concepts
+          if (/^##\s+/.test(line)) {
+            const title = line.replace(/^##\s+/, '').trim();
+            const id = makeTextId(title);
+
+            const li = document.createElement('li');
+            const a = document.createElement('a');
+            a.className = 'toc-section';
+            a.textContent = title;
+            a.href = `#${id}`; // placeholder anchor
+            li.appendChild(a);
+
+            currentSectionUl = document.createElement('ul');
+            currentSectionUl.className = 'toc-sublist';
+            li.appendChild(currentSectionUl);
+
+            root.appendChild(li);
+            currentSectionLi = li;
+            currentSubsectionUl = null;
+            continue;
+          }
+
+          // Numbered items like "1. Preliminaries" with optional indentation
+          const m = line.match(/^(\s*)(\d+)\.\s+(.*)$/);
+          if (m && currentSectionUl) {
+            const indent = m[1].length; // 0 for subsection, >0 for nested
+            const text = m[3].trim();
+            const id = makeTextId(text);
+            if (indent === 0) {
+              const li = document.createElement('li');
+              const a = document.createElement('a');
+              a.className = 'toc-subitem';
+              a.textContent = text;
+              a.href = `#${id}`;
+              li.appendChild(a);
+              currentSectionUl.appendChild(li);
+
+              // prepare nested list holder under this subsection
+              currentSubsectionUl = document.createElement('ul');
+              currentSubsectionUl.className = 'toc-sublist';
+              li.appendChild(currentSubsectionUl);
+            } else {
+              // deeper nested under the last subsection
+              if (!currentSubsectionUl) {
+                currentSubsectionUl = document.createElement('ul');
+                currentSubsectionUl.className = 'toc-sublist';
+                currentSectionUl.appendChild(currentSubsectionUl);
+              }
+              const li = document.createElement('li');
+              const a = document.createElement('a');
+              a.className = 'toc-subitem';
+              a.textContent = text;
+              a.href = `#${id}`;
+              li.appendChild(a);
+              currentSubsectionUl.appendChild(li);
+            }
+          }
+        }
+      } catch (err) {
+        const li = document.createElement('li');
+        li.textContent = 'Could not load README.md';
+        root.appendChild(li);
+        console.error(err);
+      }
+    }
+    initTheme();
+    buildTOC();
+  </script>
 </body>
 </html>
