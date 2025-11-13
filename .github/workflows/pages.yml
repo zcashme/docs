@@ -38,7 +38,7 @@ jobs:
             const path = require('path');
             const { owner, repo } = context.repo;
             const ref = context.sha;
-            const { data } = await github.repos.getCommit({ owner, repo, ref });
+            const { data } = await github.rest.repos.getCommit({ owner, repo, ref });
             const payload = {
               sha: data.sha,
               message: data.commit.message,
