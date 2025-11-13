@@ -21,3 +21,7 @@
 3.  Feedback
     1.  Draft
     2.  Verify
+
+## Release Notes
+
+1. Zcashme Docs page initial release
