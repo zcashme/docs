@@ -67,7 +67,7 @@
   <div class="layout" id="app-root">
     <nav>
       <div class="brand">Zcash Me Docs</div>
-      <div class="subtitle">Table of Contents (from README.md)</div>
+      <div class="subtitle">Table of Contents (from USERGUIDE.md)</div>
       <div class="theme-toggle" role="group" aria-label="Theme">
         <span class="theme-label">Theme</span>
         <button id="theme-light" class="theme-btn" type="button" aria-pressed="false">Light</button>
@@ -77,12 +77,12 @@
     </nav>
     <main>
       <h1>Documentation Overview</h1>
-      <p class="note">This page generates a table of contents from the repository <code>README.md</code>. Content pages will be added next.</p>
+      <p class="note">This page generates a table of contents from the repository <code>USERGUIDE.md</code>. Content pages will be added next.</p>
       <section id="release-notes" class="release" aria-labelledby="release-title">
         <h2 id="release-title">Release Notes</h2>
-        <div id="release-content" class="note">Latest release notes will be automatically extracted from <code>README.md</code>.</div>
+        <div id="release-content" class="note">Latest release notes will be automatically extracted from <code>USERGUIDE.md</code>.</div>
       </section>
-      <div class="footer">Powered by <span class="badge">GitHub Pages</span>. Update <code>README.md</code> to change the outline.</div>
+      <div class="footer">Powered by <span class="badge">GitHub Pages</span>. Update <code>USERGUIDE.md</code> to change the outline.</div>
     </main>
   </div>
   <script>
@@ -108,22 +108,22 @@
       document.getElementById('theme-dark').addEventListener('click', () => setTheme('dark'));
       document.getElementById('theme-light').addEventListener('click', () => setTheme('light'));
     }
-    async function fetchReadmeText() {
-      const candidates = ['README.md', '../README.md'];
+    async function fetchUserGuideText() {
+      const candidates = ['USERGUIDE.md', '../USERGUIDE.md'];
       for (const url of candidates) {
         try {
           const res = await fetch(url, { cache: 'no-store' });
           if (res.ok) return res.text();
         } catch (e) {}
       }
-      throw new Error('README.md not found');
+      throw new Error('USERGUIDE.md not found');
     }
 
     async function buildTOC() {
       const root = document.getElementById('toc-root');
       try {
-        // Prefer reading the README from the current directory (copied by the workflow), fallback to the parent directory when running locally.
-        const md = await fetchReadmeText();
+        // Prefer reading the USERGUIDE from the current directory (copied by the workflow), fallback to the parent directory when running locally.
+        const md = await fetchUserGuideText();
         const lines = md.split(/\r?\n/);
         let currentSectionUl = null;
         let currentSubsectionUl = null;
@@ -185,7 +185,7 @@
         loadLatestCommit();
       } catch (err) {
         const li = document.createElement('li');
-        li.textContent = 'Could not load README.md';
+        li.textContent = 'Could not load USERGUIDE.md';
         root.appendChild(li);
         console.error(err);
       }
@@ -202,7 +202,7 @@
           if (headerRegex.test(lines[i])) { startIdx = i + 1; break; }
         }
         if (startIdx === -1) {
-          container.textContent = 'README does not contain Release Notes section.';
+          container.textContent = 'USERGUIDE does not contain Release Notes section.';
           return;
         }
         const section = [];

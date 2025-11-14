@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'docs/**'
-      - 'README.md'
+      - 'USERGUIDE.md'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -26,9 +26,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Prepare site content (copy root README into docs)
+      - name: Prepare site content (copy root USERGUIDE into docs)
         run: |
-          cp README.md docs/README.md
+          cp USERGUIDE.md docs/USERGUIDE.md
 
       - name: Write latest commit metadata into docs/commit.json
         uses: actions/github-script@v7
